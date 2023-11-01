@@ -1,0 +1,2 @@
+"radiohead", "Kanye", "gorillaz", "KendrickLamar", "FrankOcean", "beatles", "pinkfloyd", "DaftPunk", "Eminem", "TaylorSwift", "deathgrips", "gratefuldead", "ToolBand", "brockhampton", "OFWGKTA", "Metallica", "lanadelrey", "TheWeeknd", "XXXTENTACION", "Coldplay", "LadyGaga", "FallOutBoy", "ledzeppelin", "KidCudi", "DavidBowie", "PRINCE", "MichaelJackson", "rollingstones", "FleetwoodMac", "ACDC", "Blink182", "ChanceTheRapper", "arcticmonkeys", "twentyonepilots",
+
