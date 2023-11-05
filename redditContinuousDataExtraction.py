@@ -5,6 +5,7 @@ from datetime import datetime
 import time
 from datetime import timedelta, date
 import os
+from tqdm import tqdm
 
 HOST = "localhost"
 USER = "root"
@@ -68,11 +69,11 @@ def scrapeData(subReddit, category, totalPages, afterPage, limit, timeLimit, ind
         else:
             elseLimit -= 1
             if elseLimit <= 0:
-                print("All data from the given date has been collected, TERMINATING the PROCESS\n")
+                # print("All data from the given date has been collected, TERMINATING the PROCESS\n")
                 return pd.DataFrame(tempCurrentData)
 
 
-    print("Collected {} reddit post data, turning to NEXT PAGE".format((totalPages)*25))
+    # print("Collected {} reddit post data, turning to NEXT PAGE".format((totalPages)*25))
     if totalPages*25 >= limit or afterPage == None:
         return pd.DataFrame(tempCurrentData)
     
@@ -88,10 +89,10 @@ limit = 1000
 index = 0
 
 
-subReddits = ["radiohead", "Kanye", "gorillaz", "KendrickLamar", "FrankOcean", "beatles", "pinkfloyd", "DaftPunk", "Eminem", "TaylorSwift", "deathgrips", "gratefuldead", "ToolBand", "brockhampton", "OFWGKTA", "Metallica", "lanadelrey", "TheWeeknd", "XXXTENTACION", "Coldplay", "LadyGaga", "FallOutBoy", "KidCudi", "DavidBowie", "PRINCE", "MichaelJackson", "rollingstones", "FleetwoodMac", "ACDC", "Blink182", "ChanceTheRapper", "arcticmonkeys", "twentyonepilots",]
-subReddits = ["radiohead", "Kanye", "gorillaz", "KendrickLamar", "FrankOcean", "beatles"]
+subReddits = ["Kanye", "gorillaz", "KendrickLamar", "FrankOcean", "beatles", "pinkfloyd", "DaftPunk", "Eminem", "TaylorSwift", "deathgrips", "gratefuldead", "ToolBand", "brockhampton", "OFWGKTA", "Metallica", "lanadelrey", "TheWeeknd", "XXXTENTACION", "Coldplay", "LadyGaga", "FallOutBoy", "KidCudi", "DavidBowie", "PRINCE", "MichaelJackson", "rollingstones", "FleetwoodMac", "ACDC", "Blink182", "ChanceTheRapper", "arcticmonkeys", "twentyonepilots",]
+# subReddits = ["Kanye", "gorillaz", "KendrickLamar", "FrankOcean", "beatles"]
 
-aliasNames = ["radiohead", "Kanye", "gorillaz", "KendrickLamar", "FrankOcean", "beatles", "pinkfloyd", "DaftPunk", "Eminem", "TaylorSwift", "deathgrips", "gratefuldead", "ToolBand", "brockhampton", "OFWGKTA", "Metallica", "lanadelrey", "TheWeeknd", "XXXTENTACION", "Coldplay", "LadyGaga", "FallOutBoy", "KidCudi", "DavidBowie", "PRINCE", "MichaelJackson", "rollingstones", "FleetwoodMac", "ACDC", "Blink182", "ChanceTheRapper", "arcticmonkeys", "twentyonepilots",]
+aliasNames = ["Kanye", "gorillaz", "KendrickLamar", "FrankOcean", "beatles", "pinkfloyd", "DaftPunk", "Eminem", "TaylorSwift", "deathgrips", "gratefuldead", "ToolBand", "brockhampton", "OFWGKTA", "Metallica", "lanadelrey", "TheWeeknd", "XXXTENTACION", "Coldplay", "LadyGaga", "FallOutBoy", "KidCudi", "DavidBowie", "PRINCE", "MichaelJackson", "rollingstones", "FleetwoodMac", "ACDC", "Blink182", "ChanceTheRapper", "arcticmonkeys", "twentyonepilots",]
 
 
 newDate = date.today() - timedelta(days=1)
@@ -109,24 +110,29 @@ newDF = pd.DataFrame()
 column_names=["dataCollectionDate", "subredditID", "subreddit", "subredditSubscribers"]
 
 
-if len(subReddits) != len(aliasNames):
-    for i in range(len(subReddits)):
-        allCurrentData = pd.concat([scrapeData(subReddits[i], "hot", totalPages, afterPage, limit, timeLimit, index, [])])
-        # print(allCurrentData.drop_duplicates(subset="title"))
+if __name__ == "__main__":
+    if len(subReddits) == len(aliasNames):
+        print("\n\nCollecting Daily REDDIT Data")
+        for i in tqdm(range(len(subReddits))):
+            allCurrentData = pd.concat([scrapeData(subReddits[i], "hot", totalPages, afterPage, limit, timeLimit, index, [])])
+            # print(allCurrentData.drop_duplicates(subset="title"))
 
-        try:
-            temp = allCurrentData[["dataCollectionDate", "subredditID", "subreddit", "subredditSubscribers"]].iloc[0]
-        except Exception as e:
-            temp = {"dataCollectionDate": "NA", "subredditID": "NA", "subreddit": "NA", "subredditSubscribers": "NA"}
+            try:
+                temp = allCurrentData[["dataCollectionDate", "subredditID", "subreddit", "subredditSubscribers"]].iloc[0]
+            except Exception as e:
+                temp = {"dataCollectionDate": "NA", "subredditID": "NA", "subreddit": "NA", "subredditSubscribers": "NA"}
 
-        temp_df = pd.DataFrame([temp])
-        newDF = pd.concat([newDF, temp_df], ignore_index=True)
+            temp_df = pd.DataFrame([temp])
+            newDF = pd.concat([newDF, temp_df], ignore_index=True)
 
-        allCurrentData.drop(["subredditID", "subreddit", "subredditSubscribers"], axis=1, inplace=True)
+            try:
+                allCurrentData.drop(["subredditID", "subreddit", "subredditSubscribers"], axis=1, inplace=True)
 
-        allCurrentData.to_csv("./Reddit/collectedData/{}/{}.csv".format(timestr, aliasNames[i].lower()), index=False, encoding="utf-8")
-    print(newDF)
-    newDF.to_csv("./Reddit/collectedData/{}/{}.csv".format(timestr, SUBSCRIBER_COUNT), index=False, encoding="utf-8")
+                allCurrentData.to_csv("./Reddit/collectedData/{}/{}.csv".format(timestr, aliasNames[i].lower()), index=False, encoding="utf-8")
+            except Exception as e:
+                pass
+        print(newDF)
+        newDF.to_csv("./Reddit/collectedData/{}/{}.csv".format(timestr, SUBSCRIBER_COUNT), index=False, encoding="utf-8")
 
 
 

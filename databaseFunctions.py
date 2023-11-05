@@ -27,22 +27,22 @@ CHANNEL_DETAILS_COLLECTION = "allChannelDetails"
 VIDEO_IDS_COLLECTION = "allVideoIDs"
 FIRST_DATA_COLLECTION = "firstDataCollection"
 
-youTubeTableStructure = {CHANNEL_DETAILS_COLLECTION: "(id INT AUTO_INCREMENT PRIMARY KEY, channelName VARCHAR(50), channelID VARCHAR(30), redditSubscriberCount BIGINT UNSIGNED, totalViews BIGINT UNSIGNED, totalVideos INT UNSIGNED, playlistID VARCHAR(50));", 
-                  VIDEO_IDS_COLLECTION: "(channelID VARCHAR(30), videoID VARCHAR(20) NOT NULL PRIMARY KEY, channelTitle VARCHAR(50), videoTitle TEXT, uploadDate DATE, tags MEDIUMTEXT , duration SMALLINT UNSIGNED);", 
-                  FIRST_DATA_COLLECTION: "(dataCollectionDate DATE, videoID VARCHAR(20) PRIMARY KEY, viewCount BIGINT UNSIGNED, likeCount INT UNSIGNED, commentCount INT UNSIGNED);",
-                  "dailyData": "(id INT AUTO_INCREMENT PRIMARY KEY, dataCollectionDate DATE, videoID VARCHAR(20), viewCount BIGINT UNSIGNED, likeCount INT UNSIGNED, commentCount INT UNSIGNED);",}
+youTubeTableStructure = {CHANNEL_DETAILS_COLLECTION: "(id INT AUTO_INCREMENT PRIMARY KEY, channelName VARCHAR(50), channelID VARCHAR(30), subscriberCount BIGINT UNSIGNED, totalViews BIGINT UNSIGNED, totalVideos INT UNSIGNED, playlistID VARCHAR(50));", 
+                  VIDEO_IDS_COLLECTION: "(channelID VARCHAR(30), videoID VARCHAR(50) NOT NULL PRIMARY KEY, channelTitle VARCHAR(50), videoTitle TEXT, uploadDate DATE, tags MEDIUMTEXT , duration SMALLINT UNSIGNED);", 
+                  FIRST_DATA_COLLECTION: "(dataCollectionDate DATE, videoID VARCHAR(50) PRIMARY KEY, viewCount BIGINT UNSIGNED, likeCount INT UNSIGNED, commentCount INT UNSIGNED);",
+                  "dailyData": "(id INT AUTO_INCREMENT PRIMARY KEY, dataCollectionDate DATE, videoID VARCHAR(50), viewCount BIGINT UNSIGNED, likeCount INT UNSIGNED, commentCount INT UNSIGNED);",}
 
-youTubeDataStructure = {CHANNEL_DETAILS_COLLECTION: "(channelName, channelID, redditSubscriberCount, totalViews, totalVideos, playlistID) VALUES (%s,%s,%s,%s,%s,%s);", VIDEO_IDS_COLLECTION: "(channelID, videoID, channelTitle, videoTitle, uploadDate, tags, duration) VALUES (%s,%s,%s,%s,%s,%s,%s);", FIRST_DATA_COLLECTION: "(dataCollectionDate, videoID, viewCount, likeCount, commentCount) VALUES (%s,%s,%s,%s,%s);", "dailyData": "(dataCollectionDate, videoID, viewCount, likeCount, commentCount) VALUES (%s,%s,%s,%s,%s);","comment": "(commentID, videoID, comment, publishedAt) VALUES (%s,%s,%s,%s);",}
+youTubeDataStructure = {CHANNEL_DETAILS_COLLECTION: "(channelName, channelID, subscriberCount, totalViews, totalVideos, playlistID) VALUES (%s,%s,%s,%s,%s,%s);", VIDEO_IDS_COLLECTION: "(channelID, videoID, channelTitle, videoTitle, uploadDate, tags, duration) VALUES (%s,%s,%s,%s,%s,%s,%s);", FIRST_DATA_COLLECTION: "(dataCollectionDate, videoID, viewCount, likeCount, commentCount) VALUES (%s,%s,%s,%s,%s);", "dailyData": "(dataCollectionDate, videoID, viewCount, likeCount, commentCount) VALUES (%s,%s,%s,%s,%s);","comment": "(commentID, videoID, comment, publishedAt) VALUES (%s,%s,%s,%s);",}
 
-redditTableStructure = {"reddit": "(id INT AUTO_INCREMENT PRIMARY KEY, dataCollectionDate DATE, publishedAt DATE, postID VARCHAR(20), userID VARCHAR(20), title LONGTEXT, upvoteRatio FLOAT UNSIGNED, ups INT UNSIGNED, totalComments INT UNSIGNED, url TEXT);",
-                        "redditSubscriberCount" : "(id INT AUTO_INCREMENT PRIMARY KEY, dataCollectionDate DATE, subredditID VARCHAR(20), subreddit VARCHAR(20), subredditSubscribers BIGINT UNSIGNED);",}
+redditTableStructure = {"reddit": "(id INT AUTO_INCREMENT PRIMARY KEY, dataCollectionDate DATE, publishedAt DATE, postID VARCHAR(50), userID VARCHAR(50), title LONGTEXT, upvoteRatio FLOAT UNSIGNED, ups INT UNSIGNED, totalComments INT UNSIGNED, url TEXT);",
+                        "redditSubscriberCount" : "(id INT AUTO_INCREMENT PRIMARY KEY, dataCollectionDate DATE, subredditID VARCHAR(50), subreddit VARCHAR(50), subredditSubscribers BIGINT UNSIGNED);",}
 
-redditDataStructure = {"reddit": "(dataCollectionDate, publishedAt ,postID, userID, title, upvoteRatio, ups, totalComments, url) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);",
+redditDataStructure = {"reddit":  "(dataCollectionDate, publishedAt ,postID, userID, title, upvoteRatio, ups, totalComments, url) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);",
                        "redditSubscriberCount": "(dataCollectionDate, subredditID, subreddit, subredditSubscribers) VALUES (%s,%s,%s,%s);"}
 
-newsTableStructure = {"news": "(id INT AUTO_INCREMENT PRIMARY KEY, dataCollectionDate DATE, celebName VARCHAR(20), sourceName VARCHAR(20), title LONGTEXT, description LONGTEXT, publishedAt DATE);",}
+newsTableStructure = {"news": "(id INT AUTO_INCREMENT PRIMARY KEY, dataCollectionDate DATE, celebName VARCHAR(50), sourceName VARCHAR(50), title LONGTEXT, description LONGTEXT, content LONGTEXT, publishedAt DATE);",}
 
-newsDataStructure = {"news": "(dataCollectionDate, celebName, sourceName, title, description, publishedAt) VALUES (%s,%s,%s,%s,%s,%s);",}
+newsDataStructure = {"news": "(dataCollectionDate, celebName, sourceName, title, description, content, publishedAt) VALUES (%s,%s,%s,%s,%s,%s,%s);",}
 
 def createTables(tableName, myCursor, inputStructure):
     try:
@@ -78,7 +78,7 @@ def createChannelTables(allChannelIDs, myCursor):
         channelID = ''.join(c for c in channelID if c.isalpha())
         try:
             # databaseFunctions.deleteTable(channelID, myCursor)
-            myCursor.execute("CREATE TABLE " + ''.join(c for c in channelID if c.isalpha()) + " (id INT AUTO_INCREMENT PRIMARY KEY, dataCollectionDate DATE, videoID VARCHAR(20), viewCount BIGINT UNSIGNED, likeCount INT UNSIGNED, commentCount INT UNSIGNED);")
+            myCursor.execute("CREATE TABLE " + ''.join(c for c in channelID if c.isalpha()) + " (id INT AUTO_INCREMENT PRIMARY KEY, dataCollectionDate DATE, videoID VARCHAR(50), viewCount BIGINT UNSIGNED, likeCount INT UNSIGNED, commentCount INT UNSIGNED);")
             print("Created table {} Successfully.\n".format(channelID))
             
         except:
@@ -101,7 +101,7 @@ def createCommentsTables(allVideoIds, myCursor):
         videoID = ''.join(c for c in videoID if c.isalpha()) + "Comments"
         try:
             # databaseFunctions.deleteTable(videoID, myCursor)
-            myCursor.execute("CREATE TABLE " + ''.join(c for c in videoID if c.isalpha()) + " (id INT AUTO_INCREMENT PRIMARY KEY, commentID VARCHAR(50), videoID VARCHAR(20), comment LONGTEXT, publishedAt DATE);")
+            myCursor.execute("CREATE TABLE " + ''.join(c for c in videoID if c.isalpha()) + " (id INT AUTO_INCREMENT PRIMARY KEY, commentID VARCHAR(50), videoID VARCHAR(50), comment LONGTEXT, publishedAt DATE);")
             print("Created table {} Successfully.\n".format(videoID))
             
         except:
@@ -199,6 +199,8 @@ def updateDailyNewsData():
 
         for row in csvData:
             addSingleData("news", myCursor, row, newsDataStructure["news"])   
+    print("Updated Daily Data to the Database")
+        
 
         
 
@@ -230,6 +232,7 @@ def deleteAllRedditTables():
     for data in lastUpdatedFiles:
         tableName = data.replace(".csv", "")
         deleteTables(tableName, myCursor)
+        
 
 if __name__=='__main__':
     allChannelIDs = pd.read_csv(YT_COLLECTED_DATA_LOCATION + '{}.csv'.format(CHANNEL_DETAILS_COLLECTION))
@@ -239,6 +242,9 @@ if __name__=='__main__':
     if database.is_connected():
         print("Database connection is Successful.\n")
     myCursor = database.cursor()
+
+
+    # myCursor.execute(f"CREATE DATABASE {DATABASE_NAME};")
 
 
     # # CREATE & DELETE TABLES FOR YOUTUBE COMMENTS
@@ -288,6 +294,8 @@ if __name__=='__main__':
 
     # # UPDATE DAILY NEWS DATA
     # updateDailyNewsData()
+
+    
 
     database.commit()
     database.close()

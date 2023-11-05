@@ -6,6 +6,7 @@ import time
 import requests
 from datetime import datetime, timedelta
 import os
+from tqdm import tqdm
 
 API_KEY = "AIzaSyCOkXSnBaaENUhdYE2CFyVV8FHnmCbTDZU"
 
@@ -42,14 +43,18 @@ def getComments(index, videoID, allData, pageToken):
     response = requests.get(url).json()
 
     index += 1
-    for i in range(len(response['items'])):
-        if response['items'][i]['snippet']['topLevelComment']['snippet']['publishedAt'].split("T")[0].strip() == yesterday:
-            data = {"commentID": response['items'][i]['id'],
-                    "videoID": response['items'][i]['snippet']['videoId'],
-                    "comment": response['items'][i]['snippet']['topLevelComment']['snippet']['textOriginal'].strip(),
-                    "publishedAt": response['items'][i]['snippet']['topLevelComment']['snippet']['publishedAt'].replace("T"," ").replace("Z",""),}
+    try:
+        for i in range(len(response['items'])):
+            if response['items'][i]['snippet']['topLevelComment']['snippet']['publishedAt'].split("T")[0].strip() == yesterday:
+                data = {"commentID": response['items'][i]['id'],
+                        "videoID": response['items'][i]['snippet']['videoId'],
+                        "comment": response['items'][i]['snippet']['topLevelComment']['snippet']['textOriginal'].strip(),
+                        "publishedAt": response['items'][i]['snippet']['topLevelComment']['snippet']['publishedAt'].replace("T"," ").replace("Z",""),}
+                allData.append(data)
+    except:
+        print("Catch")
+        pass
 
-            allData.append(data)
     if index >= 5 or 'nextPageToken' not in response:
         return allData
     else:
@@ -60,15 +65,15 @@ def getComments(index, videoID, allData, pageToken):
 
 if __name__ == "__main__":
     allVideoData = allVideoData['videoID'].tolist()
+    allVideoDataLength = len(allVideoData)
     timeStr = time.strftime("%Y%m%d-%H%M%S")
     try: os.mkdir("./YouTube/collectedData/comments/" + timeStr)
-    except: pass
-    for _ in range(len(allVideoData)):
+    except: print("In Except condition")
+    print("\n\nCollecting YOUTUBE Comments")
+    for _ in tqdm(range(allVideoDataLength)):
         allVideoInfo = getComments(0, allVideoData[_], [], "")
         if len(allVideoInfo) > 0:
             allVideoInfo = pd.DataFrame(allVideoInfo)
             # TOGGLE INDEX accordingly...
             allVideoInfo.to_csv("./YouTube/collectedData/comments/{}/{}Comments.csv".format(timeStr, ''.join(c for c in allVideoData[_] if c.isalpha())), index=False, encoding="utf-8")
-            print("Added")
-        else:
-            print("Pass")
+        # print(f"{_} of {allVideoDataLength} Added")

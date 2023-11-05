@@ -6,6 +6,8 @@ import googleapiclient.errors
 
 import pandas as pd
 import time
+from tqdm import tqdm
+import math
 
 API_KEY = "AIzaSyCOkXSnBaaENUhdYE2CFyVV8FHnmCbTDZU"
 
@@ -50,7 +52,9 @@ def getVideoStatistics(youtube, video_ids):
         response = request.execute() 
 
         index = 0
-        for video in response['items']:
+        print(f"\tPage: {(i//50)+1}/{math.ceil(len(video_ids)/50)}")
+        # for video in response['items']:
+        for _ in tqdm(range(len(response['items']))):
             video_info = {}
             video_info['dataCollectionDate'] = timeStr
             # video_info['channelID'] = video['snippet']['channelId']
@@ -61,7 +65,7 @@ def getVideoStatistics(youtube, video_ids):
             for k in stats_to_keep.keys():
                 for v in stats_to_keep[k]:
                     try:
-                        video_info[v] = video[k][v]
+                        video_info[v] = response['items'][_][k][v]
                     except:
                         video_info[v] = None
 
@@ -71,12 +75,13 @@ def getVideoStatistics(youtube, video_ids):
             
     return all_video_info
 
+if __name__ == "__main__":
+    allVideoData = allVideoData['videoID'].tolist()
 
-allVideoData = allVideoData['videoID'].tolist()
+    print("\nCollecting YOUTUBE Daily Data\n")
+    allVideoInfo = getVideoStatistics(youtube, allVideoData)
 
-allVideoInfo = getVideoStatistics(youtube, allVideoData)
-
-allVideoInfo = pd.DataFrame(allVideoInfo)
-timeStr = time.strftime("%Y%m%d-%H%M%S")
-# TOGGLE INDEX accordingly...
-allVideoInfo.to_csv("./YouTube/collectedData/dailyData/{}.csv".format(timeStr), index=False, encoding="utf-8")
+    allVideoInfo = pd.DataFrame(allVideoInfo)
+    timeStr = time.strftime("%Y%m%d-%H%M%S")
+    # TOGGLE INDEX accordingly...
+    allVideoInfo.to_csv("./YouTube/collectedData/dailyData/{}.csv".format(timeStr), index=False, encoding="utf-8")
