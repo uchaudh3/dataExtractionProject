@@ -1,7 +1,7 @@
 import os
 
 def makeAllFolders():
-    folderNames = ["./YouTube", "./YouTube/collectedData", "./YouTube/collectedData/comments", "./YouTube/collectedData/dailyData", "./Reddit", "./Reddit/collectedData", "./Reddit/collectedData/comments", "./News", "./News/collectedData"]
+    folderNames = ["./YouTube", "./YouTube/collectedData", "./YouTube/collectedData/comments", "./YouTube/collectedData/dailyData", "./Reddit", "./Reddit/collectedData", "./Reddit/collectedData/comments", "./Reddit/collectedData/politics", "./Reddit/collectedData/politics/posts", "./Reddit/collectedData/politics/comments", "./News", "./News/collectedData"]
     for folderName in folderNames:
         try:
             os.mkdir(folderName)
