@@ -23,8 +23,8 @@ response = requests.post("https://www.reddit.com/api/v1/access_token", auth=clie
 TOKEN = response.json()['access_token']
 headers = {**headers, **{'Authorization': f'bearer {TOKEN}'}}
 
-redditFilters = ["subreddit_id","subreddit","subreddit_subscribers","created_utc","author_fullname","title","upvote_ratio","ups",]
-redditFiltersName = ["subredditID","subreddit","subredditSubscribers","created","userID","title","upvoteRatio","ups",]
+redditFilters = ["subreddit_subscribers","created_utc","author_fullname","title","upvote_ratio","ups",]
+redditFiltersName = ["subredditSubscribers","created","userID","title","upvoteRatio","ups",]
 # redditFilters = ["subreddit_id", "subreddit","subreddit_subscribers","created_utc","author_fullname","title","over_18","upvote_ratio","content_categories","ups", "num_comments","selftext",]
 
 def scrapeData(subReddit, category, totalPages, afterPage, limit, timeLimit, index, tempCurrentData):
@@ -43,7 +43,6 @@ def scrapeData(subReddit, category, totalPages, afterPage, limit, timeLimit, ind
     for i in range(len(allData)):
         currentData = {}
         if allData[i]['data']['created_utc'] > timeLimit:
-            currentData['dataCollectionDate'] = datetime.strptime(timeStr, "%Y%m%d-%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
             for j in range(len(redditFilters)):
                 try:
                     if redditFilters[j] == "created_utc":
@@ -89,12 +88,7 @@ if __name__ == "__main__":
     allCurrentData = pd.concat([scrapeData("politics", "new", totalPages, "", limit, timeLimit, index, [])])
     # print(allCurrentData.drop_duplicates(subset="title"))
 
-    try:
-        temp = allCurrentData[["dataCollectionDate", "subredditID", "subreddit", "subredditSubscribers"]].iloc[0]
-    except Exception as e:
-        temp = {"dataCollectionDate": "NA", "subredditID": "NA", "subreddit": "NA", "subredditSubscribers": "NA"}
-
     currentSubscriberCount = allCurrentData['subredditSubscribers'].values[0]
-    allCurrentData.drop(["subredditID", "subreddit", "subredditSubscribers"], axis=1, inplace=True)
-    allCurrentData.to_csv(f"./Reddit/collectedData/politics/posts/{time_str}_{currentSubscriberCount}.csv", index=False, encoding="utf-8")
+    allCurrentData.drop(["subredditSubscribers"], axis=1, inplace=True)
+    allCurrentData.to_csv(f"./Reddit/collectedData/politics/posts/{time_str}_{currentSubscriberCount}_{allCurrentData.shape[0]}.csv", index=False, encoding="utf-8")
     

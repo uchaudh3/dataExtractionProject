@@ -23,9 +23,8 @@ response = requests.post("https://www.reddit.com/api/v1/access_token", auth=clie
 TOKEN = response.json()['access_token']
 headers = {**headers, **{'Authorization': f'bearer {TOKEN}'}}
 
-redditFilters = ["subreddit_id","subreddit","subreddit_subscribers","created_utc","author_fullname","title","upvote_ratio","ups",]
-redditFiltersName = ["subredditID","subreddit","subredditSubscribers","created","userID","title","upvoteRatio","ups",]
-# redditFilters = ["subreddit_id", "subreddit","subreddit_subscribers","created_utc","author_fullname","title","over_18","upvote_ratio","content_categories","ups", "num_comments","selftext",]
+redditFilters = ["author_fullname","link_title","body",]
+redditFiltersName = ["userID","title","body",]
 
 def scrapeData(subReddit, category, totalPages, afterPage, limit, timeLimit, index, tempCurrentData):
     requestURL = f"https://oauth.reddit.com/r/{subReddit}/{category}.json?after={afterPage}"
@@ -40,18 +39,12 @@ def scrapeData(subReddit, category, totalPages, afterPage, limit, timeLimit, ind
         afterPage = None
 
     allData = res.json()['data']['children']
-    print(allData)
-    return 0
     for i in range(len(allData)):
         currentData = {}
         if allData[i]['data']['created_utc'] > timeLimit:
-            currentData['dataCollectionDate'] = datetime.strptime(timeStr, "%Y%m%d-%H%M%S").strftime("%Y-%m-%d %H:%M:%S")
             for j in range(len(redditFilters)):
                 try:
-                    if redditFilters[j] == "created_utc":
-                        currentData["publishedAt"] = datetime.fromtimestamp(allData[i]['data'][redditFilters[j]]).strftime('%Y-%m-%d %H:%M:%S') 
-                    else:
-                        currentData[redditFiltersName[j]] = allData[i]['data'][redditFilters[j]]
+                    currentData[redditFiltersName[j]] = allData[i]['data'][redditFilters[j]].strip()
                 except:
                     currentData[redditFiltersName[j]] = "NA"
 
@@ -80,7 +73,7 @@ index = 0
 
 
 current_time = datetime.now()
-new_time = current_time - timedelta(hours=6)
+new_time = current_time - timedelta(hours=1)
 timeLimit = new_time.timestamp()
 
 time_str = current_time.strftime("%d-%m-%Y_%H-%M-%S")
@@ -91,12 +84,5 @@ if __name__ == "__main__":
     allCurrentData = pd.concat([scrapeData("politics", "comments", totalPages, "", limit, timeLimit, index, [])])
     # print(allCurrentData.drop_duplicates(subset="title"))
 
-    try:
-        temp = allCurrentData[["dataCollectionDate", "subredditID", "subreddit", "subredditSubscribers"]].iloc[0]
-    except Exception as e:
-        temp = {"dataCollectionDate": "NA", "subredditID": "NA", "subreddit": "NA", "subredditSubscribers": "NA"}
-
-    currentSubscriberCount = allCurrentData['subredditSubscribers'].values[0]
-    allCurrentData.drop(["subredditID", "subreddit", "subredditSubscribers"], axis=1, inplace=True)
-    allCurrentData.to_csv(f"./Reddit/collectedData/politics/posts/{time_str}_{currentSubscriberCount}.csv", index=False, encoding="utf-8")
+    allCurrentData.to_csv(f"./Reddit/collectedData/politics/comments/{time_str}_{allCurrentData.shape[0]}.csv", index=False, encoding="utf-8")
     
