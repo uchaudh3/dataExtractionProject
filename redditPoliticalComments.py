@@ -6,6 +6,8 @@ from datetime import datetime, timedelta, date
 import os
 from tqdm import tqdm
 
+homeDirectory = "/home/uno/Desktop/dataCollection/dataExtractionProject"
+
 HOST = "localhost"
 USER = "root"
 PASSWORD = "root"
@@ -84,5 +86,5 @@ if __name__ == "__main__":
     allCurrentData = pd.concat([scrapeData("politics", "comments", totalPages, "", limit, timeLimit, index, [])])
     # print(allCurrentData.drop_duplicates(subset="title"))
 
-    allCurrentData.to_csv(f"./Reddit/collectedData/politics/comments/{timeStr}_{allCurrentData.shape[0]}.csv", index=False, encoding="utf-8")
+    allCurrentData.to_csv(homeDirectory + f"/Reddit/collectedData/politics/comments/{timeStr}_{allCurrentData.shape[0]}.csv", index=False, encoding="utf-8")
     

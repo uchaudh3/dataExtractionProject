@@ -10,11 +10,12 @@ from time import sleep
 import pandas as pd
 import os
 
+homeDirectory = "/home/uno/Desktop/dataCollection/dataExtractionProject"
 
 API_KEY = "AIzaSyCOkXSnBaaENUhdYE2CFyVV8FHnmCbTDZU"
 
-PRIMARY_FILE_LOCATION = "./YouTube/collectedData/"
-DAILY_FILE_LOCATION = "./YouTube/collectedData/dailyData/"
+PRIMARY_FILE_LOCATION = "/YouTube/collectedData/"
+DAILY_FILE_LOCATION = "/YouTube/collectedData/dailyData/"
 
 channelIDs = ["UCs6eXM7s8Vl5WcECcRHc2qQ", "UCfIXdjDQH9Fau7y99_Orpjw", "UCZwYLLsXM2rBtixxFAdYR1A", "UCqf-kTp9ERV5T1rPayno7LA", "UCc4K7bAqpdBP8jh1j9XZAww", "UCY2qt3dw2TQJxvBrDiYGHdQ", "UC_kRDKYrUlrbtrSiyu5Tflg", "UCfM3zsQsOnfWNUppiycmBuw", "UCqECaJ8Gagnn7YCbPEzWH6g", "UCuq1H-HXWoW4JL-hX5bWxzw", "UCPuuuhmMW7jh6roOrIV9yRw", "UC1wUo-29zS7m_Jp-U_xYcFQ", "UCFLnwFhuJeBSCjIJewxSqKw", "UC7V34pJZN9v7J1eLp4uq9Jg", "UCbulh9WdLtEXiooRcYK7SWw", "UCqk3CdGN_j8IR9z4uBbVPSg", "UC0WP5P-ufpRfjbNrmOWwLBQ", "UCM9r1xn6s30OnlJWb-jc3Sw", "UCDPM_n1atn2ijUwHd0NNRQw", "UCNL1ZadSjHpjm4q9j2sVtOA", "UC2qWxZHgnlwDvcmLqP23jrA", "UCoNPsL8j28yfKRu6e7YUhPA", "UC8YgWcDKi1rLbQ1OtrOHeDw", "UCv3mNSNjuWldihk1DUdnGtw", "UC5OrDvL9DscpcAstz7JnQGA", "UCB_Z6rBg3WW3NL4-QimhC2A", "UCAb60rVrvVQVfSgrX1UWb0g", "UCB0JSO6d5ysH2Mmqz5I9rIw", "UCdvlHk5SZWwr9HjUcwtu8ng", "UCeXp3EC97_rUl_e2vgM3gLg", "UC-KTRBl9_6AX10-Y7IKwKdw", "UCBQZwaNPFfJ1gZ1fLZpAEGw",]
 
@@ -146,7 +147,7 @@ def youTubeDataFiltering(data):
 
 
 if __name__=='__main__':
-    getChannelData(youtube, channelIDs).to_csv(PRIMARY_FILE_LOCATION + "{}.csv".format(CHANNEL_DETAILS_COLLECTION), index=False, encoding="utf-8")
+    getChannelData(youtube, channelIDs).to_csv(homeDirectory + PRIMARY_FILE_LOCATION + "{}.csv".format(CHANNEL_DETAILS_COLLECTION), index=False, encoding="utf-8")
     
 
     for playlistId in playlistIds:
@@ -166,18 +167,15 @@ if __name__=='__main__':
     allVideoInfo.drop("tags", axis=1, inplace=True)
     allVideoInfo.drop("duration", axis=1, inplace=True)
 
-    timeStr = time.strftime("%Y%m%d%H")
-
-
 
     # TOGGLE INDEX accordingly...
     finalAllYouTubeVideoIDs = youTubeDataFiltering(allYouTubeVideoIDs)
-    finalAllYouTubeVideoIDs.to_csv(PRIMARY_FILE_LOCATION + "{}.csv".format(VIDEO_IDS_COLLECTION), index=False, encoding="utf-8")
+    finalAllYouTubeVideoIDs.to_csv(homeDirectory + PRIMARY_FILE_LOCATION + "{}.csv".format(VIDEO_IDS_COLLECTION), index=False, encoding="utf-8")
 
     finalAllVideoInfo = finalAllYouTubeVideoIDs.merge(allVideoInfo, on="videoID", how='left')[["dataCollectionDate","videoID","viewCount","likeCount","commentCount"]].copy()
-    finalAllVideoInfo.to_csv(PRIMARY_FILE_LOCATION + "{}.csv".format(FIRST_DATA_COLLECTION), index=False, encoding="utf-8")
+    finalAllVideoInfo.to_csv(homeDirectory + PRIMARY_FILE_LOCATION + "{}.csv".format(FIRST_DATA_COLLECTION), index=False, encoding="utf-8")
     try:
-        os.mkdir(DAILY_FILE_LOCATION)
+        os.mkdir(homeDirectory + DAILY_FILE_LOCATION)
     except:
         pass
 # Tags to remove from Title

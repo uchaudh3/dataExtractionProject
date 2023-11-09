@@ -8,6 +8,8 @@ from datetime import datetime, timedelta
 import os
 from tqdm import tqdm
 
+homeDirectory = "/home/uno/Desktop/dataCollection/dataExtractionProject"
+
 API_KEY = "AIzaSyCOkXSnBaaENUhdYE2CFyVV8FHnmCbTDZU"
 
 
@@ -26,8 +28,8 @@ yesterday = (datetime.today() - timedelta(days=1)).strftime("%Y-%m-%d")
 # for i in range(len(data['items'])):
 #   comments.append(data['items'][i]['snippet']['topLevelComment']['snippet']['textOriginal'])
 
-# ./YouTube/collectedData/youtubeVideoIds.csv
-allVideoData = pd.read_csv('./YouTube/collectedData/allVideoIDs.csv')
+# /YouTube/collectedData/youtubeVideoIds.csv
+allVideoData = pd.read_csv(homeDirectory + '/YouTube/collectedData/allVideoIDs.csv')
 
 
 def getComments(index, videoID, allData, pageToken):
@@ -67,7 +69,7 @@ if __name__ == "__main__":
     allVideoData = allVideoData['videoID'].tolist()
     allVideoDataLength = len(allVideoData)
     timeStr = time.strftime("%Y%m%d-%H%M%S")
-    try: os.mkdir("./YouTube/collectedData/comments/" + timeStr)
+    try: os.mkdir(homeDirectory + "/YouTube/collectedData/comments/" + timeStr)
     except: print("In Except condition")
     print("\n\nCollecting YOUTUBE Comments")
     for _ in tqdm(range(allVideoDataLength)):
@@ -75,5 +77,5 @@ if __name__ == "__main__":
         if len(allVideoInfo) > 0:
             allVideoInfo = pd.DataFrame(allVideoInfo)
             # TOGGLE INDEX accordingly...
-            allVideoInfo.to_csv("./YouTube/collectedData/comments/{}/{}Comments.csv".format(timeStr, ''.join(c for c in allVideoData[_] if c.isalpha())), index=False, encoding="utf-8")
+            allVideoInfo.to_csv(homeDirectory + "/YouTube/collectedData/comments/{}/{}Comments.csv".format(timeStr, ''.join(c for c in allVideoData[_] if c.isalpha())), index=False, encoding="utf-8")
         # print(f"{_} of {allVideoDataLength} Added")

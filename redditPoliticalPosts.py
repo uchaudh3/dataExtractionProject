@@ -6,6 +6,8 @@ from datetime import datetime, timedelta, date
 import os
 from tqdm import tqdm
 
+homeDirectory = "/home/uno/Desktop/dataCollection/dataExtractionProject"
+
 HOST = "localhost"
 USER = "root"
 PASSWORD = "root"
@@ -90,5 +92,5 @@ if __name__ == "__main__":
 
     currentSubscriberCount = allCurrentData['subredditSubscribers'].values[0]
     allCurrentData.drop(["subredditSubscribers"], axis=1, inplace=True)
-    allCurrentData.to_csv(f"./Reddit/collectedData/politics/posts/{timeStr}_{currentSubscriberCount}_{allCurrentData.shape[0]}.csv", index=False, encoding="utf-8")
+    allCurrentData.to_csv(homeDirectory + f"/Reddit/collectedData/politics/posts/{timeStr}_{currentSubscriberCount}_{allCurrentData.shape[0]}.csv", index=False, encoding="utf-8")
     

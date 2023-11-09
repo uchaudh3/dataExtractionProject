@@ -7,13 +7,15 @@ from datetime import timedelta, date
 import os
 from tqdm import tqdm
 
+homeDirectory = "/home/uno/Desktop/dataCollection/dataExtractionProject"
+
 HOST = "localhost"
 USER = "root"
 PASSWORD = "root"
 DATABASE_NAME = "dataScienceTestDatabase"
 
-PRIMARY_FILE_LOCATION = "./Reddit/collectedData/"
-DAILY_FILE_LOCATION = "./Reddit/collectedData/dailyData/"
+PRIMARY_FILE_LOCATION = "/Reddit/collectedData/"
+DAILY_FILE_LOCATION = "/Reddit/collectedData/dailyData/"
 
 SUBSCRIBER_COUNT = "redditSubscriberCount"
 
@@ -103,7 +105,7 @@ timeLimit = (time.mktime(newDate.timetuple()))
 timestr = time.strftime("%Y%m%d-%H%M%S")
 print(timeLimit)
 
-os.mkdir(os.path.join(PRIMARY_FILE_LOCATION, timestr))
+os.mkdir(os.path.join(homeDirectory + PRIMARY_FILE_LOCATION, timestr))
 
 
 newDF = pd.DataFrame()
@@ -128,11 +130,11 @@ if __name__ == "__main__":
             try:
                 allCurrentData.drop(["subredditID", "subreddit", "subredditSubscribers"], axis=1, inplace=True)
 
-                allCurrentData.to_csv("./Reddit/collectedData/{}/{}.csv".format(timestr, aliasNames[i].lower()), index=False, encoding="utf-8")
+                allCurrentData.to_csv(homeDirectory + "/Reddit/collectedData/{}/{}.csv".format(timestr, aliasNames[i].lower()), index=False, encoding="utf-8")
             except Exception as e:
                 pass
         print(newDF)
-        newDF.to_csv("./Reddit/collectedData/{}/{}.csv".format(timestr, SUBSCRIBER_COUNT), index=False, encoding="utf-8")
+        newDF.to_csv(homeDirectory + "/Reddit/collectedData/{}/{}.csv".format(timestr, SUBSCRIBER_COUNT), index=False, encoding="utf-8")
 
 
 

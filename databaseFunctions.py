@@ -13,15 +13,15 @@ USER = "root"
 PASSWORD = "root"
 DATABASE_NAME = "dataScienceTestDatabase"
 
-YT_COLLECTED_DATA_LOCATION = "./YouTube/collectedData/"
-YT_DAILY_FILE_LOCATION = "./YouTube/collectedData/dailyData/"
+YT_COLLECTED_DATA_LOCATION = "/YouTube/collectedData/"
+YT_DAILY_FILE_LOCATION = "/YouTube/collectedData/dailyData/"
 
-YT_COMMENTS_FILE_LOCATION = "./YouTube/collectedData/comments/"
+YT_COMMENTS_FILE_LOCATION = "/YouTube/collectedData/comments/"
 
-REDDIT_COLLECTED_DATA_LOCATION = "./Reddit/collectedData/"
+REDDIT_COLLECTED_DATA_LOCATION = "/Reddit/collectedData/"
 
 
-NEWS_DAILY_FILE_LOCATION = "./News/collectedData/"
+NEWS_DAILY_FILE_LOCATION = "/News/collectedData/"
 
 CHANNEL_DETAILS_COLLECTION = "allChannelDetails"
 VIDEO_IDS_COLLECTION = "allVideoIDs"
@@ -248,7 +248,7 @@ if __name__=='__main__':
 
 
     # # CREATE & DELETE TABLES FOR YOUTUBE COMMENTS
-    # allVideoData = pd.read_csv('./YouTube/collectedData/allVideoIDs.csv')
+    # allVideoData = pd.read_csv('/YouTube/collectedData/allVideoIDs.csv')
     # allVideoData = allVideoData['videoID'].tolist()
     # deleteCommentsTables(allVideoData, myCursor)
     # createCommentsTables(allVideoData, myCursor)

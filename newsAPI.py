@@ -5,6 +5,7 @@ from time import sleep
 from datetime import datetime, timedelta
 from tqdm import tqdm
 
+homeDirectory = "/home/uno/Desktop/dataCollection/dataExtractionProject"
 
 API_KEY = "24ad8975b73e43529bac14562c9f9ad1"
 # API_KEY = "1655e6c7c4884394bec1b847d94c0568"
@@ -50,6 +51,6 @@ if __name__ == "__main__":
         currentData = getNews(0, 1, [], celebNames[_])
         if currentData != []:
             finalNews = pd.concat([finalNews, pd.DataFrame(currentData)], ignore_index=True)
-    finalNews.to_csv("./News/collectedData/" + time.strftime("%Y%m%d-%H%M%S") + ".csv", index=False)
+    finalNews.to_csv(homeDirectory + "/News/collectedData/" + time.strftime("%Y%m%d-%H%M%S") + ".csv", index=False)
         
 

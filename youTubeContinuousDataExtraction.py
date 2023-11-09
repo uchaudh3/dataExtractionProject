@@ -9,6 +9,8 @@ import time
 from tqdm import tqdm
 import math
 
+homeDirectory = "/home/uno/Desktop/dataCollection/dataExtractionProject"
+
 API_KEY = "AIzaSyCOkXSnBaaENUhdYE2CFyVV8FHnmCbTDZU"
 
 allVideoData = pd.DataFrame()
@@ -20,8 +22,8 @@ apiVersion = "v3"
 # Get credentials and create an API client
 youtube = googleapiclient.discovery.build(apiServiceName, apiVersion, developerKey=API_KEY)
 
-# ./YouTube/collectedData/youtubeVideoIds.csv
-allVideoData = pd.read_csv('./YouTube/collectedData/allVideoIDs.csv')
+# /YouTube/collectedData/youtubeVideoIds.csv
+allVideoData = pd.read_csv(homeDirectory + '/YouTube/collectedData/allVideoIDs.csv')
 
 def convertYouTubeTime(givenTime):
     numbers, temp, index = [0]*3, "", 2
@@ -84,4 +86,4 @@ if __name__ == "__main__":
     allVideoInfo = pd.DataFrame(allVideoInfo)
     timeStr = time.strftime("%Y%m%d-%H%M%S")
     # TOGGLE INDEX accordingly...
-    allVideoInfo.to_csv("./YouTube/collectedData/dailyData/{}.csv".format(timeStr), index=False, encoding="utf-8")
+    allVideoInfo.to_csv(homeDirectory + "/YouTube/collectedData/dailyData/{}.csv".format(timeStr), index=False, encoding="utf-8")

@@ -6,12 +6,14 @@ from datetime import datetime, timedelta, date
 import os
 from tqdm import tqdm
 
+homeDirectory = "/home/uno/Desktop/dataCollection/dataExtractionProject"
+
 HOST = "localhost"
 USER = "root"
 PASSWORD = "root"
 DATABASE_NAME = "dataScienceTestDatabase"
 
-PRIMARY_FILE_LOCATION = "./Reddit/collectedData/comments/"
+PRIMARY_FILE_LOCATION = "/Reddit/collectedData/comments/"
 
 CLIENT_ID = 'UeN31barzQmS-CROFvlqkQ'
 SECRET_KEY = "73q3fyrrOR9CPvSqVTON0zkyAmM4cw"
@@ -88,12 +90,12 @@ subReddits = ["Kanye", "gorillaz", "KendrickLamar", "FrankOcean", "beatles", "pi
 aliasNames = ["Kanye", "gorillaz", "KendrickLamar", "FrankOcean", "beatles", "pinkfloyd", "DaftPunk", "Eminem", "TaylorSwift", "deathgrips", "gratefuldead", "ToolBand", "brockhampton", "OFWGKTA", "Metallica", "lanadelrey", "TheWeeknd", "XXXTENTACION", "Coldplay", "LadyGaga", "FallOutBoy", "KidCudi", "DavidBowie", "PRINCE", "MichaelJackson", "rollingstones", "FleetwoodMac", "ACDC", "Blink182", "ChanceTheRapper", "arcticmonkeys", "twentyonepilots",]
 
 if __name__ == "__main__":
-    os.mkdir(os.path.join(PRIMARY_FILE_LOCATION, timeStr))
+    os.mkdir(os.path.join(homeDirectory + PRIMARY_FILE_LOCATION, timeStr))
     print("\nCollecting Daily REDDIT Data")
     
     if len(subReddits) == len(aliasNames):
         for i in tqdm(range(len(subReddits))):
             allCurrentData = pd.concat([scrapeData(subReddits[i], "comments", totalPages, "", limit, timeLimit, index, [])])
 
-            allCurrentData.to_csv(f"./Reddit/collectedData/comments/{timeStr}/{aliasNames[i].lower()}_{allCurrentData.shape[0]}.csv", index=False, encoding="utf-8")
+            allCurrentData.to_csv(homeDirectory + f"/Reddit/collectedData/comments/{timeStr}/{aliasNames[i].lower()}_{allCurrentData.shape[0]}.csv", index=False, encoding="utf-8")
         
