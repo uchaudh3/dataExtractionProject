@@ -31,7 +31,6 @@ def scrapeData(subReddit, category, totalPages, afterPage, limit, timeLimit, ind
     res = requests.get(requestURL, headers=headers)
     totalPages += 1
     elseLimit = 20
-    timeStr = time.strftime("%Y%m%d-%H%M%S")
 
     try:
         afterPage = res.json()['data']['after']
@@ -73,10 +72,11 @@ index = 0
 
 
 current_time = datetime.now()
-new_time = current_time - timedelta(hours=1)
+new_time = current_time - timedelta(minutes=10)
 timeLimit = new_time.timestamp()
 
-time_str = current_time.strftime("%d-%m-%Y_%H-%M-%S")
+timeStr = time.strftime("%Y%m%d-%H%M%S")
+
 
 
 if __name__ == "__main__":
@@ -84,5 +84,5 @@ if __name__ == "__main__":
     allCurrentData = pd.concat([scrapeData("politics", "comments", totalPages, "", limit, timeLimit, index, [])])
     # print(allCurrentData.drop_duplicates(subset="title"))
 
-    allCurrentData.to_csv(f"./Reddit/collectedData/politics/comments/{time_str}_{allCurrentData.shape[0]}.csv", index=False, encoding="utf-8")
+    allCurrentData.to_csv(f"./Reddit/collectedData/politics/comments/{timeStr}_{allCurrentData.shape[0]}.csv", index=False, encoding="utf-8")
     
